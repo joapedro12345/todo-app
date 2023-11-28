@@ -17,6 +17,23 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 //rotas
+app.post('/excluir', (requisicao, resposta) => {
+    const id = requisicao.body.id
+
+    const sql = `
+        DELETE FROM tarefas
+        WHERE id = ${id}
+    `
+
+    conexao.query(sql, (erro) => {
+        if (erro) {
+            return console.log(erro)
+        }
+
+        resposta.redirect('/')
+    })
+})
+
 app.post('/completar', (requisicao, resposta) => {
     const id = requisicao.body.id
 
@@ -103,7 +120,7 @@ app.get('/completas', (requisicao, resposta) => {
 app.get('/ativas', (requisicao, resposta) => {
     const sql = `
         SELECT * FROM tarefas
-        WHERE completa - 0
+        WHERE completa = 0
     `
 
     conexao.query(sql, (erro, dados) => {
